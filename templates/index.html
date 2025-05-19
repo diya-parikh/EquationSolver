@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Equation Solver</title>
+    <style>
+        body {
+            background-color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .uploaded-image {
+            height: 300px;
+            width: 450px;
+            border: 1px solid black;
+            margin-top: 20px;
+        }
+
+        input[type="file"],
+        input[type="submit"],
+        button,
+        input[type="text"] {
+            margin: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .text-field {
+            width: 250px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Handwritten Equation Solver</h1>
+
+    <!-- Upload Form -->
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="image">
+        <input type="submit" value="Upload">
+    </form>
+
+    <!-- Uploaded Image -->
+    <h2>Uploaded Image:</h2>
+    <div>
+        {% if filename %}
+            <img class="uploaded-image" src="static/equation.png">
+        {% else %}
+            <img class="uploaded-image" src="static/upload_image_logo.png">
+        {% endif %}
+    </div>
+
+    <!-- Prediction and Solve Form -->
+    <form name="form1" action="{{ url_for('predict') }}" method="POST">
+        <div>
+            <button type="submit" style="background-color: #50ba50;">Predict</button>
+        </div>
+
+        <div>
+            <input class="text-field" type="text" name="equation" value="{{ equation }}" placeholder="Predicted Equation">
+        </div>
+
+        <div>
+            <button class="solve" type="submit" style="background-color: #05efc0;">Solve</button>
+        </div>
+
+        <div>
+            <input class="text-field" type="text" name="solve" value="{{ solved_equation }}" placeholder="Solved Result" readonly>
+        </div>
+    </form>
+
+</body>
+</html>
+

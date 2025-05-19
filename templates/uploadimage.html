@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Equation Image</title>
+    <style>
+        body {
+            background-color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 40px;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+        }
+
+        .upload-section {
+            margin-bottom: 20px;
+        }
+
+        .preview {
+            margin: 20px auto;
+            width: 300px;
+            height: 300px;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preview img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 10px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
+
+        input[type="text"] {
+            width: 300px;
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Upload Equation Image</h1>
+
+    <form class="upload-section" action="/upload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="image" required>
+        <br>
+        <input type="submit" value="Upload" class="btn">
+    </form>
+
+    <div class="preview">
+        {% if filename %}
+            <img src="{{ filename }}" alt="Uploaded Image">
+        {% else %}
+            <p>No image uploaded yet</p>
+        {% endif %}
+    </div>
+
+    <button class="btn" onclick="getPrediction()">Predict Equation</button>
+    <br>
+    <input type="text" id="predicted" placeholder="Predicted Equation" readonly>
+    <br>
+    <button class="btn" onclick="solveEquation()">Solve</button>
+    <br>
+    <input type="text" id="solution" placeholder="Solution" readonly>
+    <br><br>
+    <form action="{{ url_for('index') }}">
+        <button class="btn">Back to Home</button>
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function getPrediction() {
+            $.get('/predict_upload_image', function(data) {
+                if (data !== 'Please write or upload some image first') {
+                    $('#predicted').val(data);
+                } else {
+                    alert(data);
+                }
+            });
+        }
+
+        function solveEquation() {
+            let equation = $('#predicted').val();
+            if (!equation) {
+                alert('Please predict an equation first!');
+                return;
+            }
+
+            $.post('/solve_equation_func', { inputequation: equation }, function(result) {
+                $('#solution').val(result);
+            });
+        }
+    </script>
+</body>
+</html>
+
